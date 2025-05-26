@@ -124,7 +124,12 @@ public static class Endpoints
                 // Wait for the cancellation token to be triggered
                 await Task.Delay(Timeout.Infinite, cancellationToken);
             }
-            catch (Exception ex) {
+            catch (OperationCanceledException)
+            {
+                // Expected when client disconnects — no action needed
+            }
+            catch (Exception ex)
+            {
                 // Handle any exceptions that occur during streaming
                 await response.WriteAsync($"event: error\ndata: {{\"error\": \"{ex.Message}\"}}\n\n", cancellationToken);
                 await response.Body.FlushAsync(cancellationToken);
