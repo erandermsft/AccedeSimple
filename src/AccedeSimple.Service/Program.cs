@@ -23,6 +23,7 @@ using AccedeSimple.Service.Services;
 using Microsoft.Extensions.VectorData;
 using Microsoft.SemanticKernel.Connectors.SqliteVec;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient("LocalGuide", c =>
@@ -40,6 +41,7 @@ builder.Services.AddKeyedSingleton<ConcurrentDictionary<string,List<ChatItem>>>(
 // Add storage
 builder.AddKeyedAzureBlobClient("uploads");
 
+
 // Configure logging
 builder.Services.AddLogging();
 
@@ -51,16 +53,22 @@ builder.Services.AddSingleton<IList<TripRequest>>(new List<TripRequest>());
 
 builder.AddServiceDefaults();
 
+
+
 builder.Services.AddMcpClient();
 
 var kernel = builder.Services.AddKernel();
+
 
 kernel.Services
     .AddChatClient(modelName: Environment.GetEnvironmentVariable("MODEL_NAME") ?? "gpt-4o-mini")
     .UseFunctionInvocation();
 
+
+
 kernel.Services.AddEmbeddingGenerator(modelName: "text-embedding-3-small");
-kernel.Services.AddSqliteCollection<int, Document>("Documents", "Data Source=documents.db");
+
+kernel.Services.AddInMemoryVectorStoreRecordCollection<int, Document>("Documents");
 kernel.Services.AddTransient<ProcessService>();
 kernel.Services.AddTransient<MessageService>();
 kernel.Services.AddTransient<SearchService>();
