@@ -28,7 +28,7 @@ public class ReceiptProcessingStep : KernelProcessStep
 
     private static readonly ChatConfiguration s_SafetyChatConfiguration =
         new ContentSafetyServiceConfiguration(
-            credential: new ChainedTokenCredential(new AzureCliCredential(), new DefaultAzureCredential()),
+            credential: new ChainedTokenCredential(new AzureCliCredential(), new DefaultAzureCredential(new DefaultAzureCredentialOptions(){ExcludeVisualStudioCredential=true})),
             subscriptionId: Environment.GetEnvironmentVariable("AZURE_SUBSCRIPTION_ID"),
             resourceGroupName: Environment.GetEnvironmentVariable("AZURE_RESOURCE_GROUP"),
             projectName: Environment.GetEnvironmentVariable("AZURE_AI_FOUNDRY_PROJECT"))
