@@ -1,0 +1,5 @@
+# Outputs
+infra
+
+# Configuration files
+appsettings.local.json

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 import uvicorn
 from pydantic import BaseModel
+from telemetry import setup_telemetry
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
@@ -26,6 +27,8 @@ class CityAttractions(BaseModel):
 # Initialize FastAPI app
 app = FastAPI()
 
+setup_telemetry(app)
+
 # Root endpoint
 @app.get("/")
 async def root():
@@ -41,7 +44,7 @@ client = AsyncAzureOpenAI(
     api_version="2024-06-01"
 )
 
-model_name = os.environ.get("MODEL_NAME", "gpt-4o-mini")
+model_name = os.environ.get("MODEL_NAME", "gpt-4.1")
 model = OpenAIModel(model_name, provider=OpenAIProvider(openai_client=client))
 agent = Agent(model, 
               output_type=CityAttractions,

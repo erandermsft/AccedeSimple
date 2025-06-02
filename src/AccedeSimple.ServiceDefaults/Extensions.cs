@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ServiceDiscovery;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Microsoft.Extensions.AI;
 using Azure.AI.OpenAI;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -44,12 +42,6 @@ public static class Extensions
 
         builder.AddAzureOpenAIClient(connectionName: "openai");
 
-        // Uncomment the following to restrict the allowed schemes for service discovery.
-        // builder.Services.Configure<ServiceDiscoveryOptions>(options =>
-        // {
-        //     options.AllowedSchemes = ["https"];
-        // });
-
         return builder;
     }
 
@@ -79,8 +71,6 @@ public static class Extensions
                             !context.Request.Path.StartsWithSegments(HealthEndpointPath)
                             && !context.Request.Path.StartsWithSegments(AlivenessEndpointPath)
                     )
-                    // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
-                    //.AddGrpcClientInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddSource("Experimental.Microsoft.Extensions.AI*")
                     .AddSource("Experimental.ModelContextProtocol");
@@ -99,13 +89,6 @@ public static class Extensions
         {
             builder.Services.AddOpenTelemetry().UseOtlpExporter();
         }
-
-        // Uncomment the following lines to enable the Azure Monitor exporter (requires the Azure.Monitor.OpenTelemetry.AspNetCore package)
-        //if (!string.IsNullOrEmpty(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
-        //{
-        //    builder.Services.AddOpenTelemetry()
-        //       .UseAzureMonitor();
-        //}
 
         return builder;
     }
@@ -149,7 +132,7 @@ public static class Extensions
                     .GetChatClient(modelName)
                     .AsIChatClient())
                 // .UseFunctionInvocation()
-                .UseOpenTelemetry()
+                .UseOpenTelemetry(configure: client => client.EnableSensitiveData = true)
                 .UseLogging(loggerFactory)
                 .Build();
         });
@@ -168,7 +151,7 @@ public static class Extensions
                 azureOpenAIClient
                     .GetEmbeddingClient(modelName)
                     .AsIEmbeddingGenerator())
-                .UseOpenTelemetry()
+                .UseOpenTelemetry(configure: client => client.EnableSensitiveData = true)
                 .UseLogging(loggerFactory)
                 .Build();
         });

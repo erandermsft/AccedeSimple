@@ -2,7 +2,11 @@
 
 name: accede-simple
 services:  
-  app:
+  aspire:
     language: dotnet
     project: ./src/AccedeSimple.AppHost/AccedeSimple.AppHost.csproj
     host: containerapp
+    
+
+infra:
+  provider: 'bicep'

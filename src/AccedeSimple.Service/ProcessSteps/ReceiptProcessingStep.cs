@@ -34,7 +34,7 @@ public class ReceiptProcessingStep : KernelProcessStep
             projectName: Environment.GetEnvironmentVariable("AZURE_AI_FOUNDRY_PROJECT"))
                 .ToChatConfiguration();
 
-    private static readonly ReportingConfiguration s_reportingConfiguation =
+    private static readonly ReportingConfiguration s_reportingConfiguration =
         DiskBasedReportingConfiguration.Create(
             storageRootPath: Path.Combine(Path.GetTempPath(), "AccedeSimple"),
             evaluators: [new ContentHarmEvaluator()],
@@ -93,7 +93,7 @@ public class ReceiptProcessingStep : KernelProcessStep
 
         // Generate a scenario name that uniquely identifies the request content being evaluated.
         var scenarioName = $"Image Safety Check {AIJsonUtilities.HashDataToString([userRequest])}";
-        await using var scenarioRun = await s_reportingConfiguation.CreateScenarioRunAsync(scenarioName);
+        await using var scenarioRun = await s_reportingConfiguration.CreateScenarioRunAsync(scenarioName);
 
         var s = Stopwatch.StartNew();
         var result = await scenarioRun.EvaluateAsync(userRequest, modelResponse);

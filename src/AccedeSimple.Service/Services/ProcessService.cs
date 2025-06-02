@@ -15,6 +15,7 @@ public class ProcessService
     private readonly MessageService _messageService;
 
     private readonly IChatClient _chatClient;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly UserSettings _userSettings;
     private readonly HttpClient _httpClient;
 
@@ -30,8 +31,9 @@ public class ProcessService
         _process = process;
         _messageService = messageService;
         _chatClient = chatClient;
+        _httpClientFactory = httpClientFactory;
         _userSettings = userSettings.Value;
-        _httpClient = httpClientFactory.CreateClient("LocalGuide");
+        _httpClient = _httpClientFactory.CreateClient("LocalGuide");
     }
 
     public async Task ActAsync(UserIntent userIntent, ChatItem userInput)

@@ -7,4 +7,10 @@ dependencies = [
     "fastapi[standard]>=0.115.12",
     "pydantic-ai-slim[openai]>=0.2.3",
     "uvicorn>=0.34.2",
+    "opentelemetry-sdk",
+    "opentelemetry-instrumentation-fastapi",
+    "opentelemetry-instrumentation-openai-v2",
+    "opentelemetry-instrumentation-httpx",
+    "opentelemetry-exporter-otlp-proto-grpc",
+    "azure-ai-inference[opentelemetry]"
 ]
